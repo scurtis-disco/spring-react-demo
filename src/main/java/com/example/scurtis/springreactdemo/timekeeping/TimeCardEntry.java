@@ -17,6 +17,6 @@ public class TimeCardEntry {
     private UUID timeCardEntryUuid;
     private long startDayTime;
     private long startEndTime;
-    private Long timeCardUuid;
+    private UUID timeCardUuid;
 
 }
