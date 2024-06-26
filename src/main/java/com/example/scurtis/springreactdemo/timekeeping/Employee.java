@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.Objects;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 
 @Entity
 @Data
+@Builder(setterPrefix = "with")
 public class Employee {
 
     @Id
@@ -20,8 +22,5 @@ public class Employee {
     private String firstName;
     private String lastName;
     private String description;
-
-    private Employee() {}
-
 
 }
