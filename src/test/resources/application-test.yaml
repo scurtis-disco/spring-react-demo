@@ -1,3 +1,7 @@
+spring:
+  datasource:
+    initialization-mode: never
+
 logging:
   level:
     root: INFO

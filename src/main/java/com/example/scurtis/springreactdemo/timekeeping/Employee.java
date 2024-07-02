@@ -1,15 +1,16 @@
 package com.example.scurtis.springreactdemo.timekeeping;
 
 import java.util.List;
-import java.util.Objects;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Entity
-@Data
 @Builder(setterPrefix = "with")
+@Entity
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@Setter(value = AccessLevel.PACKAGE)
+@Getter
 public class Employee {
 
     @Id
@@ -17,7 +18,6 @@ public class Employee {
     private Long employeeId;
 
     @OneToMany
-    @JoinColumn(name="employeeId")
     private List<TimeCard> timeCards;
     private String firstName;
     private String lastName;

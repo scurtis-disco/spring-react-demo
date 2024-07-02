@@ -1,23 +1,26 @@
 package com.example.scurtis.springreactdemo.timekeeping;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 import java.util.UUID;
 
-@Entity
-@Data
 @Builder(setterPrefix = "with")
+@Entity
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@Setter(value = AccessLevel.PACKAGE)
+@Getter
 public class TimeCard {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID timeCardUuid;
-    private Long employeeId;
+    @ManyToOne
+    @JoinColumn(name = "employeeId", referencedColumnName = "employeeId")
+    private Employee employee;
     @OneToMany
-    @JoinColumn(name="timeCardUuid", referencedColumnName = "timeCardUuid")
     private List<TimeCardEntry> timeCardEntries;
     private boolean isApproved;
 }
