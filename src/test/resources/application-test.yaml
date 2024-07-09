@@ -1,6 +1,9 @@
 spring:
-  datasource:
-    initialization-mode: never
+  jpa:
+    hibernate:
+      ddl-auto: none
+#  datasource:
+#    initialization-mode: never
 
 logging:
   level:

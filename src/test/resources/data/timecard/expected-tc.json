@@ -1,1 +1,17 @@
-{"timeCardUuid":"afb46619-8354-42df-9250-28505920da3a","employeeId":1234567,"timeCardEntries":[{"timeCardEntryUuid":"54292efb-750d-41dc-a521-ce1ea1f4242e","startDayTime":1719403200,"startEndTime":1719435600,"timeCardUuid":"afb46619-8354-42df-9250-28505920da3a"}],"approved":true}
+{
+  "timeCardUuid":"afb46619-8354-42df-9250-28505920da3a",
+  "employee":{
+    "employeeId":1234567,
+    "firstName": "Sean",
+    "lastName": "Curtis",
+    "description": "This is a description"
+  },
+  "timeCardEntries":[
+    {
+      "timeCardEntryUuid":"54292efb-750d-41dc-a521-ce1ea1f4242e",
+      "startDayTime":1719403200,
+      "endDayTime":1719435600
+    }
+  ],
+  "approved":true
+}

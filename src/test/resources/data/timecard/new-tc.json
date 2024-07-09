@@ -1,0 +1,10 @@
+{
+  "employee":{
+    "employeeId": 1234567,
+    "firstName": "Joe",
+    "lastName": "Somebody",
+    "description": "I can haz description"
+  },
+  "timeCardEntries": [],
+  "approved": false
+}
