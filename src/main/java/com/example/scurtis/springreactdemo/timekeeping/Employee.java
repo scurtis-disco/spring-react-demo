@@ -2,6 +2,8 @@ package com.example.scurtis.springreactdemo.timekeeping;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +20,7 @@ public class Employee {
     private Long employeeId;
 
     @OneToMany
+    @JsonIgnore
     private List<TimeCard> timeCards;
     private String firstName;
     private String lastName;

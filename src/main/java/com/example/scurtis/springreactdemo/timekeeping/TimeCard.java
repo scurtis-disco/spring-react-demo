@@ -1,5 +1,7 @@
 package com.example.scurtis.springreactdemo.timekeeping;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,8 +21,11 @@ public class TimeCard {
     private UUID timeCardUuid;
     @ManyToOne
     @JoinColumn(name = "employeeId", referencedColumnName = "employeeId")
+//    @JsonBackReference
     private Employee employee;
-    @OneToMany
+
+    @OneToMany(mappedBy = "timeCard")
+    @JsonManagedReference
     private List<TimeCardEntry> timeCardEntries;
     private boolean isApproved;
 }
