@@ -4,7 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.example.scurtis.springreactdemo.timekeeping.TimeCard;
 import lombok.extern.slf4j.Slf4j;
+import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +19,7 @@ import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,8 +39,12 @@ class TimeCardControllerTest {
     @Value("classpath:data/timecard/new-tc.json")
     Resource resourceFile;
 
+    @Value("classpath:data/timecard/new-tc-no-employee.json")
+    Resource nonExistentEmployeeFile;
+
     @BeforeEach
     void setUp() {
+
     }
 
     @AfterEach
@@ -72,8 +79,6 @@ class TimeCardControllerTest {
     void shouldCreateNewTimeCard() throws IOException {
         String fullUri = String.format("%s%s", testRestTemplate.getRootUri(), "/timecards");
         String jsonResource = resourceFile.getContentAsString(Charset.defaultCharset());
-        log.info("posting to :: {}", fullUri);
-        log.info("json is  :: {}", jsonResource);
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         HttpEntity<String> entity = new HttpEntity<>(jsonResource, headers);
@@ -83,17 +88,39 @@ class TimeCardControllerTest {
                 entity,
                 TimeCard.class
         );
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        TimeCard saved = response.getBody();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        URI tcLocation = response.getHeaders().getLocation();
+        log.debug("location is :: {}", tcLocation.getPath());
+        // retrieve the newly created timecard
+        TimeCard saved = testRestTemplate.getForEntity(tcLocation, TimeCard.class).getBody();
+
         assertThat(saved).isNotNull();
         assertThat(saved.isApproved()).isEqualTo(false);
         assertThat(saved.getTimeCardEntries()).isEmpty();
-        assertThat(saved.getEmployee().getEmployeeId()).isEqualTo(1234567);
+        assertThat(saved.getEmployee().getEmployeeId()).isEqualTo(7654321);
         assertThat(saved.getEmployee().getFirstName()).isEqualTo("Joe");
         assertThat(saved.getEmployee().getLastName()).isEqualTo("Somebody");
 
-        // TODO - WHAT DO WE DO IF THE EMPLOYEE DOESN'T EXIST?? THIS TEST IS PASSING BECAUSE I AM USING AN ID THAT ALREADY
-        //  EXISTS IN THE EMPLOYEE TABLE
     }
+
+    @Test
+    void shouldNotCreate_nonExistentEmployee() throws IOException {
+        String fullUri = String.format("%s%s", testRestTemplate.getRootUri(), "/timecards");
+        String jsonResource = nonExistentEmployeeFile.getContentAsString(Charset.defaultCharset());
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        HttpEntity<String> entity = new HttpEntity<>(jsonResource, headers);
+
+        ResponseEntity<TimeCard> response = testRestTemplate.postForEntity(
+                fullUri,
+                entity,
+                TimeCard.class
+        );
+        // TODO - DO WE CHANGE THE RETURN TO ADD SOMETHING MORE SPECIFIC HERE?
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+
+    }
+
 
 }

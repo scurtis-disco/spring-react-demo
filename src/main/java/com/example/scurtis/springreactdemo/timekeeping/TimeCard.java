@@ -19,7 +19,7 @@ public class TimeCard {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID timeCardUuid;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "employeeId", referencedColumnName = "employeeId")
 //    @JsonBackReference
     private Employee employee;

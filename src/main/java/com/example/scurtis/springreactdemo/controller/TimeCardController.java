@@ -3,9 +3,12 @@ package com.example.scurtis.springreactdemo.controller;
 import com.example.scurtis.springreactdemo.repository.TimeCardRepository;
 import com.example.scurtis.springreactdemo.timekeeping.TimeCard;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,19 +22,27 @@ public class TimeCardController {
         this.timeCardRepository = timeCardRepository;
     }
 
-    @GetMapping("/timecards/{timecardId}")
+    @GetMapping(
+            value = "/timecards/{timecardId}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     private ResponseEntity<?> findById(@PathVariable UUID timecardId) {
-        log.info("attempting to find timecard UUID -> {}", timecardId.toString());
-        timeCardRepository.findAll().forEach(tc -> {
-            log.info("found time card: {}", tc.getTimeCardUuid().toString());
-        });
+        log.debug("attempting to find timecard UUID -> {}", timecardId.toString());
         Optional<TimeCard> timeCardOptional = timeCardRepository.findById(timecardId);
         return timeCardOptional.isPresent() ? ResponseEntity.ok(timeCardOptional.get()) : ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/timecards")
-    private TimeCard createTimeCard(@RequestBody TimeCard timeCard) {
+    @PostMapping(
+        value = "/timecards",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    private ResponseEntity<TimeCard> createTimeCard(@RequestBody TimeCard timeCard, UriComponentsBuilder uriComponentsBuilder) {
         log.info("attempting to create a new time card: {}", timeCard.toString());
-        return timeCardRepository.save(timeCard);
+        TimeCard created = timeCardRepository.save(timeCard);
+        URI locationOfTimeCard = uriComponentsBuilder
+                .path("/timecards/{id}")
+                .buildAndExpand(created.getTimeCardUuid())
+                .toUri();
+        return ResponseEntity.created(locationOfTimeCard).build();
     }
 }
