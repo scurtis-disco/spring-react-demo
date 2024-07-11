@@ -26,7 +26,7 @@ public class TimeCardController {
             value = "/timecards/{timecardId}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    private ResponseEntity<?> findById(@PathVariable UUID timecardId) {
+    private ResponseEntity<?> findTimeCardById(@PathVariable UUID timecardId) {
         log.debug("attempting to find timecard UUID -> {}", timecardId.toString());
         Optional<TimeCard> timeCardOptional = timeCardRepository.findById(timecardId);
         return timeCardOptional.isPresent() ? ResponseEntity.ok(timeCardOptional.get()) : ResponseEntity.notFound().build();
